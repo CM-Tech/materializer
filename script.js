@@ -6,7 +6,11 @@ var smallProps=["color","background-color"];//,"width","height","margin","border
 relevantProps=smallProps;
 //var network = new synaptic.Architect.Perceptron(40, 25, relevantProps.length);
 var maxOutputLength=1;
-var architect=neataptic.architect;
+var Node = neataptic.Node;
+var Neat = neataptic.Neat;
+var Network = neataptic.Network;
+var Methods = neataptic.methods;
+var Architect = neataptic.architect;
 var myTrainingSet = [];
 var outN=[];
 var charRange=65+26-32;
@@ -231,23 +235,34 @@ function styleElement(element){
     
 }
 var options = {
-  mutation: neataptic.methods.mutation.ALL,
+  mutation: Methods.mutation.ALL,
   mutationRate: 0.75,
   clear: true,
   log: 1,
-  iterations: 1000,
+  iterations: 100,
   equal: true,
 elitism: 5,
 };
-var myNetwork = new architect.LSTM(charRange, 10,10, charRange*maxOutputLength);//relevantProps.length*maxOutputLength);
+var myNetwork = new Architect.LSTM(charRange, 6,6, charRange*maxOutputLength,{
+  memoryToMemory: true,    // default is false
+  outputToMemory: false,    // default is false
+  outputToGates: false,     // default is false
+  inputToOutput: true,      // default is true
+  inputToDeep: true         // default is true
+});//relevantProps.length*maxOutputLength);
+/*var myNetwork = new Architect.Random(charRange, 100, charRange*maxOutputLength, {
+  connections: 200,
+  gates: 10,
+  selfconnections: 10
+});*/
 addElementToTrainingSet(document.body);
-myNetwork.train(myTrainingSet, {
+/*myNetwork.train(myTrainingSet, {
   log: 5,
   iterations: 600,
   error: 0.0003,
   clear: true,
   rate: 0.01,
-});
+});*/
 //myNetwork.evolve(myTrainingSet, options);
 
 function getComputedStyleProp(elem,prop) {
@@ -277,3 +292,4 @@ function dumpComputedStyles(elem,prop) {
 function domToNonMDL(){
 
 }
+//drawGraph(myNetwork.graph(1000, 1000), '.draw');
